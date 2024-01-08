@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\XmlToArrayController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\IndexController;
 
 /*
@@ -15,5 +15,5 @@ use App\Http\Controllers\IndexController;
 |
 */
 
-Route::get('/', IndexController::class)->name('upload-xml');
-Route::POST('/', [XmlToArrayController::class, 'downloadAndProcessXml'])->name('upload-xml');
+Route::get('/', [PageController::class, 'showForm'])->name('upload-xml');
+Route::POST('/', [PageController::class, 'downloadAndProcessXml'])->name('upload-xml');

@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
-class XmlToArrayController extends Controller
+class PageController extends Controller
 {
-    public function downloadAndProcessXml()
+    public function showForm() 
     {
+        return view('upload-xml');
+    }
+
+    public function downloadAndProcessXml(Request $request)
+    {
+        
+
+
+        
         $url = 'https://quarta-hunt.ru/bitrix/catalog_export/export_Ngq.xml';
 
         //Используем Guzzle для выполнения HTTP-запроса
@@ -63,7 +73,7 @@ class XmlToArrayController extends Controller
                         }                        
                     } 
                 }                                        
-            }         
+            }          
         } else {
             throw new \Exception('Ошибка получения XML');
         }    

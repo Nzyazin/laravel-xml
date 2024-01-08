@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->increments('id'); 
+            $table->integer('product_id')->primary();
             $table->string('url');
             $table->integer('price');
             $table->integer('old_price');
@@ -20,11 +20,10 @@ return new class extends Migration
             $table->string('picture');
             $table->string('name');
             $table->string('vendor');
-            $table->string('category');                        
-            $table->string('sub_category');
-            $table->string('sub_sub_category');
-
-            $table->integer('product_id');
+            $table->unsignedBigInteger('category');                        
+            $table->unsignedBigInteger('sub_category');
+            $table->unsignedBigInteger('sub_sub_category');
+            
             $table->foreign('category')->references('category_id')->on('categories')->onDelete('cascade')->onUpdate('cascade');                        
             $table->foreign('sub_category')->references('sub_category_id')->on('subcategories')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('sub_sub_category')->references('sub_sub_category_id')->on('subsubcategories')->onDelete('cascade')->onUpdate('cascade');

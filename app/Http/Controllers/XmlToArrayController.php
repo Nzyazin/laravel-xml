@@ -63,12 +63,10 @@ class XmlToArrayController extends Controller
                         }                        
                     } 
                 }                                        
-            }
-            dd($categoriesArray);          
-            
+            }         
         } else {
             throw new \Exception('Ошибка получения XML');
         }    
-     
+        return view('upload-xml');
     }
 }

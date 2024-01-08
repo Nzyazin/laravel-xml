@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\XmlToArrayController;
+use App\Http\Controllers\IndexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +15,5 @@ use App\Http\Controllers\XmlToArrayController;
 |
 */
 
-Route::get('/downloadAndProcessXml', [XmlToArrayController::class, 'downloadAndProcessXml']);
+Route::get('/', IndexController::class)->name('upload-xml');
+Route::POST('/', [XmlToArrayController::class, 'downloadAndProcessXml'])->name('upload-xml');

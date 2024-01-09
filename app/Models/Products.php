@@ -10,9 +10,7 @@ class Products extends Model
     protected $fillable = ['name', 'product_id', 'url', 'price', 
     'old_price', 'currencyId', 'picture', 'vendor',
     'category', 'sub_category', 'sub_sub_category', 'available'
-    ];
-
-    
+    ];    
 
     public static function createWithCategories($shopArray)
     

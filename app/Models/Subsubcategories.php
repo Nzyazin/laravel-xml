@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subsubcategories extends Model
 {
     protected $table = 'subsubcategories';
+    protected $primaryKey = 'sub_sub_category_id';
     protected $fillable = ['sub_sub_category_id', 'name', 'parent_id', 'parent_name'];
 
     // Отношение многие к одному с подкатегориями
@@ -14,10 +15,5 @@ class Subsubcategories extends Model
     {
         return $this->belongsTo(Subcategories::class, 'sub_sub_category_id');
     }
-
-    // Отношение один ко многим с продуктами
-    public function products()
-    {
-        return $this->hasMany(Products::class, 'sub_sub_category');
-    }
+    
 }

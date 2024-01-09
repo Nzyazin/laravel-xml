@@ -17,7 +17,7 @@ class XmlProcessingService
     private function xmlToArray($xmlContent)
     {
         $xmlObject = simplexml_load_string($xmlContent);
-        //dd($xmlObject->shop->offers->offer);
+        //dd($xmlObject->shop->offers);
         $categoriesArray = [];
 
         //Цикл для разбора категорий
@@ -72,7 +72,7 @@ class XmlProcessingService
             $arrayOffer = json_decode(json_encode($offer), true);
             $offerArray[] = [
                 'name' => (string) $arrayOffer['name'],
-                'product_id' => (integer) $offer['id'],
+                'product_id' => (string) $offer['id'],
                 'url' => (string) $arrayOffer['url'],
                 'price' => $arrayOffer['price'],
                 'old_price' => isset($arrayOffer['oldprice']) ? $arrayOffer['oldprice'] : 'none',

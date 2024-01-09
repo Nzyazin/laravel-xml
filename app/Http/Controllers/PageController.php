@@ -32,21 +32,6 @@ class PageController extends Controller
         return view('upload-xml');
     }
 
-    public function showDownloadForm() 
-    {
-        return view('download-xlsx');
-    }
-
-    public function download($filename)
-    {
-        $path = storage_path('app/exports/' . $filename);
-        if (file_exists($path)) {
-            return response()->download($path);
-        } else {
-            abort(404, 'File not found');
-        }
-    }
-
     public function downloadAndProcessXml(Request $request)
     {   
         $validator = Validator::make($request->all(), [

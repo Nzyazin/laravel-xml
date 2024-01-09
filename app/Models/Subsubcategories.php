@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subsubcategories extends Model
 {
     protected $table = 'subsubcategories';
+    protected $fillable = ['sub_sub_category_id', 'name', 'parent_id', 'parent_name'];
 
     // Отношение многие к одному с подкатегориями
     public function subcategories()

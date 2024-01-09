@@ -15,6 +15,7 @@ class Products extends Model
     
 
     public static function createWithCategories($shopArray)
+    
     {
         foreach ($shopArray['offers'] as $offer) {
             $product = new self();

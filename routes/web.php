@@ -17,3 +17,5 @@ use App\Http\Controllers\IndexController;
 
 Route::get('/', [PageController::class, 'showForm'])->name('upload-xml');
 Route::POST('/', [PageController::class, 'downloadAndProcessXml'])->name('upload-xml');
+Route::get('/download', [PageController::class, 'exportToExcel'])->name('download-xlsx');
+

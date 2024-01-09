@@ -9,6 +9,9 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\XmlProcessingService;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsModelExport;
+use Illuminate\Support\Facades\Response;
 
 class PageController extends Controller
 {
@@ -18,10 +21,30 @@ class PageController extends Controller
     {
         $this->xmlService = $xmlService;
     }
+
+    public function exportToExcel()
+    {                    
+        return Excel::download(new ProductsModelExport, 'example.xlsx');
+    }
     
     public function showForm() 
     {
         return view('upload-xml');
+    }
+
+    public function showDownloadForm() 
+    {
+        return view('download-xlsx');
+    }
+
+    public function download($filename)
+    {
+        $path = storage_path('app/exports/' . $filename);
+        if (file_exists($path)) {
+            return response()->download($path);
+        } else {
+            abort(404, 'File not found');
+        }
     }
 
     public function downloadAndProcessXml(Request $request)
@@ -42,7 +65,7 @@ class PageController extends Controller
         // Путь к сохраненному файлу
         $filePath = storage_path('app/' . $path);
 
-        $shopArray = $this->xmlService->parseXmlToArray($filePath); 
+        $shopArray = $this->xmlService->parseXmlToArray($filePath);
 
         //Цикл для записи категорий в БД
         foreach ($shopArray['categories'] as $key => $value) {
@@ -74,10 +97,9 @@ class PageController extends Controller
                 }
             }
         }
-        //dd($shopArray);
+        
         $product = Products::createWithCategories($shopArray);
         
-        
-        return view('upload-xml', $product);
+        return redirect()->route('download-xlsx');
     }
 }

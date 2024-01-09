@@ -17,6 +17,7 @@ class Products extends Model
     public static function createWithCategories($shopArray)
     
     {
+        Products::truncate(); 
         foreach ($shopArray['offers'] as $offer) {
             $product = new self();
             $subsubcategory = Subsubcategories::find((integer) $offer['category']);

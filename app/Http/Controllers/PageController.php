@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\XmlProcessingService;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsModelExport;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
@@ -68,7 +68,12 @@ class PageController extends Controller
         $shopArray = $this->xmlService->parseXmlToArray($filePath);
 
         //Цикл для записи категорий в БД
-        foreach ($shopArray['categories'] as $key => $value) {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Subsubcategories::truncate();
+        Subcategories::truncate();
+        Categories::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        foreach ($shopArray['categories'] as $key => $value) {            
             $categories = new Categories([
                 'category_id' => $key,
                 'name' => $value['name']
@@ -86,7 +91,7 @@ class PageController extends Controller
                 $subcategories->save();
 
                 //Цикл для записи подподкатегорий в БД
-                foreach ($shopArray['categories'][$key]['subcategory'][$key2]['subsubcategory'] as $key3 => $value3) {                    
+                foreach ($shopArray['categories'][$key]['subcategory'][$key2]['subsubcategory'] as $key3 => $value3) {                                       
                     $subsubcategories = new Subsubcategories([
                         'sub_sub_category_id' => $key3,
                         'name' => $value3['name'],

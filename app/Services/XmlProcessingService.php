@@ -17,54 +17,30 @@ class XmlProcessingService
     private function xmlToArray($xmlContent)
     {
         $xmlObject = simplexml_load_string($xmlContent);        
-
+        $subcategories = [];
          // Обработка категорий, подкатегорий и подподкатегорий
-         foreach ($xmlObject->shop->categories->category as $category) {
-            
+        foreach ($xmlObject->shop->categories->category as  $category) {
             $id = (string) $category['id'];
             $name = (string) $category;
             $parentId = isset($category['parentId']) ? (string) $category['parentId'] : null;
 
             if ($parentId === null) {
-                $categoriesArray[$id] = ['id' => $id, 'name' => $name];
+                $categories[$id] = ['id' => $id, 'name' => $name];
             } else {
-                if (isset($categoriesArray[$parentId])) {
-                    $subcategories[$id] = ['id' => $id, 'name' => $name, 'parentId' => $parentId];                    
-                } else {
-                    $subsubcategories[$id] = ['id' => $id, 'name' => $name, 'parentId' => $parentId];
+                if (isset($categories[$parentId])) {                                        
+                    $subcategories[$id] = ['id' => $id, 'name' => $name, 'parentId' => $parentId, 'parentName' => $categories[$parentId]['name']];                   
+                } else {                    
+                    $subsubcategories[$id] = ['id' => $id, 'name' => $name, 'parentId' => $parentId, ];                    
                 }
-            }
-        }
+            }           
+        } 
 
-        foreach ($subcategories as $subcategoryId => $subcategory) {
-            $parentId = $subcategory['parentId'];
-        
-            // Проверяем, существует ли категория с указанным parentId
-            if (isset($categoriesArray[$parentId])) {
-                // Добавляем подкатегорию в массив категории
-                $categoriesArray[$parentId]['subcategories'][$subcategoryId] = $subcategory;
-        
-                // Проверяем, есть ли подподкатегории для текущей подкатегории
-                if (isset($subsubcategories[$subcategoryId])) {
-                    $subsubcategoryId = $subsubcategories[$subcategoryId]['id'];
-                    $categoriesArray[$parentId]['subcategories'][$subcategoryId]['subsubcategories'][$subsubcategoryId] = $subsubcategories[$subcategoryId];
-                }
-            } else {
-                    // Если категории не существует, создаем ее и добавляем подкатегорию
-                $categoriesArray[$parentId] = [
-                    'id' => $parentId,
-                    'name' => 'Категория с ID ' . $parentId, // Можете использовать другое имя
-                    'subcategories' => [$subcategoryId => $subcategory],
-                ];
-
-                // Проверяем, есть ли подподкатегории для текущей подкатегории
-                if (isset($subsubcategories[$subcategoryId])) {
-                    $subsubcategoryId = $subsubcategories[$subcategoryId]['id'];
-                    $categoriesArray[$parentId]['subcategories'][$subcategoryId]['subsubcategories'][$subsubcategoryId] = $subsubcategories[$subcategoryId];
-                }
+        //Добавление в подподкатегории подкатегорий
+        foreach ($subsubcategories as $key => $subsubcategory) {
+            if (isset($subcategories[$subsubcategory['parentId']])) {
+                $subsubcategories[$key]['parentName'] = $subcategories[$subsubcategory['parentId']]['name'];
             }
-        }
-        //dd($categoriesArray);
+        }     
         
         foreach ($xmlObject->shop->offers->offer as $offer) {        
             $arrayOffer = json_decode(json_encode($offer), true);
@@ -83,11 +59,8 @@ class XmlProcessingService
             ];            
            
         }
-        $shopArray = [
-            'categories' => $categoriesArray,
-            'offers' => $offerArray
-        ];
-        dd($shopArray);
+
+        $shopArray = ['categories' => $categories, 'subcategories' => $subcategories, 'subsubcategories' => $subsubcategories];
         return $shopArray;
     }
 }

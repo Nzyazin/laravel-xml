@@ -59,36 +59,33 @@ class PageController extends Controller
         Categories::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        //Цикл для записи категорий в БД
-        foreach ($shopArray['categories'] as $key => $value) {            
-            $categories = new Categories([
-                'category_id' => $key,
-                'name' => $value['name']
+        //Создание категорий
+        foreach ($shopArray['categories'] as $categoryData) {            
+            $categories = Categories::create([
+                'category_id' => $categoryData['id'],
+                'name' => $categoryData['name'],
             ]);
-            $categories->save();
-            
-            //Цикл для записи подкатегорий в БД
-            foreach ($shopArray['categories'][$key]['subcategory'] as $key2 => $value2) {
-                $subcategories = new Subcategories([
-                    'sub_category_id' => $key2,
-                    'name' => $value2['name'],
-                    'parent_id' => $key,
-                    'parent_name' => $value['name']
-                ]);
-                $subcategories->save();
-
-                //Цикл для записи подподкатегорий в БД
-                foreach ($shopArray['categories'][$key]['subcategory'][$key2]['subsubcategory'] as $key3 => $value3) {                                       
-                    $subsubcategories = new Subsubcategories([
-                        'sub_sub_category_id' => $key3,
-                        'name' => $value3['name'],
-                        'parent_id' => $key2,
-                        'parent_name' => $value2['name']
-                    ]);
-                    $subsubcategories->save();
-                }
-            }
         }
+
+        //Создание подкатегорий
+        foreach ($shopArray['subcategories'] as $subcategoryData) { 
+            $subcategories = Subcategories::create([
+                'sub_category_id' => $subcategoryData['id'],
+                'name' => $subcategoryData['name'],
+                'parent_id' => $subcategoryData['parentId'],
+                'parent_name' => $subcategoryData['parentName'],
+            ]);
+        }
+
+        //Создание подподкатегорий
+        foreach ($shopArray['subsubcategories'] as $subsubcategoryData) { 
+            $subsubcategories = Subsubcategories::create([
+                'sub_sub_category_id' => $subsubcategoryData['id'],
+                'name' => $subsubcategoryData['name'],
+                'parent_id' => $subsubcategoryData['parentId'],
+                'parent_name' => $subsubcategoryData['parentName'],
+            ]);
+        }        
         
         $product = Products::createWithCategories($shopArray);
         

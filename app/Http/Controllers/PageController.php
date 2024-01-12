@@ -48,16 +48,18 @@ class PageController extends Controller
         $path = $xmlFile->storeAs('temp', 'temp.xml');
 
         // Путь к сохраненному файлу
-        $filePath = storage_path('app/' . $path);
+        $filePath = storage_path('app/' . $path);        
 
         $shopArray = $this->xmlService->parseXmlToArray($filePath);
-
-        //Цикл для записи категорий в БД
+        
+        //Очистка таблиц в БД
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Subsubcategories::truncate();
         Subcategories::truncate();
         Categories::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        //Цикл для записи категорий в БД
         foreach ($shopArray['categories'] as $key => $value) {            
             $categories = new Categories([
                 'category_id' => $key,

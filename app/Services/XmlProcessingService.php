@@ -60,7 +60,7 @@ class XmlProcessingService
            
         }
 
-        $shopArray = ['categories' => $categories, 'subcategories' => $subcategories, 'subsubcategories' => $subsubcategories];
+        $shopArray = ['categories' => $categories, 'subcategories' => $subcategories, 'subsubcategories' => $subsubcategories, 'offers' => $offerArray];
         return $shopArray;
     }
 }

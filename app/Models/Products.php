@@ -17,18 +17,27 @@ class Products extends Model
     {
         Products::truncate(); 
         foreach ($shopArray['offers'] as $offer) {
+            //dd($shopArray['subcategories']);
             $product = new self();
-            $subsubcategory = Subsubcategories::find((integer) $offer['category']);
-            if ($subsubcategory) {
-                $product->sub_sub_category = $subsubcategory->name;
-                $product->sub_category = $subsubcategory->parent_name;
-                $subcategory = Subcategories::find($subsubcategory->parent_id);
-                $product->category = $subcategory->parent_name;
-            } else {
-                $subcategory = Subcategories::find((integer) $offer['category']);
-                $product->sub_category = $subcategory->name;
-                $product->category = $subcategory->parent_name;
-            }         
+            $Id = isset($offer['category']) ? $offer['category'] : null;
+            if ($Id) {
+                if (isset($shopArray['subsubcategories'][$Id])) {
+                    $product->sub_sub_category = $shopArray['subsubcategories'][$Id]['name'];
+                    $product->sub_category = $shopArray['subsubcategories'][$Id]['parentName'];
+
+                    $subsubcategoriesId = $shopArray['subsubcategories'][$Id]['id'];
+                    
+                    foreach($shopArray['subcategories'] as $subcategories) {
+                        if ($subcategories['parentId'] == $subsubcategoriesId) {
+                            $product->category = $subcategories['parentName'];
+                        }
+                    } 
+
+                } elseif (isset($shopArray['subcategories'][$Id])) {
+                    $product->sub_category = $shopArray['subcategories'][$Id]['name'];
+                    $product->category = $shopArray['subcategories'][$Id]['parentName'];
+                }
+            }       
 
             $product->name = $offer['name'];
             $product->product_id = $offer['product_id'];
@@ -39,8 +48,7 @@ class Products extends Model
             $product->picture = $offer['picture'];
             $product->vendor = $offer['vendor'];
             $product->available = $offer['available'];
-            $product->save();
-        }        
-        return $product;
+            $product->save();            
+        }   
     }
 }
